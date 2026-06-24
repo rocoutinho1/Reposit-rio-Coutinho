@@ -1,0 +1,2 @@
+- [Perfil do usuário](user_profile.md) — Profissional não técnico, prefere explicações simples em português
+- [Estilo de comunicação](feedback_communication.md) — Explicar tudo como se o usuário tivesse 15 anos, sem jargões, sempre em português

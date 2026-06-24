@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(powershell -Command 'Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\('\\\\''C:\\\\_EMPRESA\\\\Referência proposta\\\\QPS — Proposta Comercial.pdf'\\\\''\\); Write-Host '\\\\''ok'\\\\''')",
+      "Bash(xargs ls *)"
+    ]
+  }
+}
