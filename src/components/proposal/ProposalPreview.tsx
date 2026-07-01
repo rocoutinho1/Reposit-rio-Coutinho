@@ -171,7 +171,10 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
     arr.filter((i) => ids.includes(i.id)).map((i) => i.label);
 
   const formatLabel = (id: string) => VIDEO_FORMATS.find((f) => f.id === id)?.label || id;
-  const durationLabel = (id: string) => VIDEO_DURATIONS.find((d) => d.id === id)?.label || id;
+  const durationLabel = (id: string, customDuration?: string) => {
+    if (id === "custom" && customDuration) return customDuration;
+    return VIDEO_DURATIONS.find((d) => d.id === id)?.label || id;
+  };
 
   const validityDays = calcularDiasValidade(generalConditions.validityStart, generalConditions.validityEnd);
   const todayFormatted = getTodayFormatted();
@@ -297,7 +300,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           )}
                           {g.duration && (
                             <span className="border px-2.5 py-1 text-xs rounded-md" style={{ borderColor: c.border, color: c.text }}>
-                              {durationLabel(g.duration)}
+                              {durationLabel(g.duration, g.customDuration)}
                             </span>
                           )}
                         </div>

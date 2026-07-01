@@ -110,6 +110,11 @@ function VideoGroupRow({
     name: `deliverables.video.groups.${index}.name` as never,
   }) as string || "";
 
+  const duration = useWatch({
+    control,
+    name: `deliverables.video.groups.${index}.duration` as never,
+  }) as string || "";
+
   const selectClass =
     "w-full border-b border-black/20 bg-transparent py-1.5 text-sm outline-none focus:border-[#375e40]";
 
@@ -188,23 +193,42 @@ function VideoGroupRow({
       />
 
       {/* Duração */}
-      <Controller
-        name={`deliverables.video.groups.${index}.duration` as never}
-        control={control}
-        defaultValue={"" as never}
-        render={({ field }) => (
-          <select
-            value={field.value as string}
-            onChange={(e) => field.onChange(e.target.value)}
-            className={selectClass}
-          >
-            <option value="">Selecione</option>
-            {VIDEO_DURATIONS.map((dur) => (
-              <option key={dur.id} value={dur.id}>{dur.label}</option>
-            ))}
-          </select>
+      <div>
+        <Controller
+          name={`deliverables.video.groups.${index}.duration` as never}
+          control={control}
+          defaultValue={"" as never}
+          render={({ field }) => (
+            <select
+              value={field.value as string}
+              onChange={(e) => field.onChange(e.target.value)}
+              className={selectClass}
+            >
+              <option value="">Selecione</option>
+              {VIDEO_DURATIONS.map((dur) => (
+                <option key={dur.id} value={dur.id}>{dur.label}</option>
+              ))}
+              <option value="custom">Personalizado</option>
+            </select>
+          )}
+        />
+        {duration === "custom" && (
+          <Controller
+            name={`deliverables.video.groups.${index}.customDuration` as never}
+            control={control}
+            defaultValue={"" as never}
+            render={({ field }) => (
+              <input
+                type="text"
+                placeholder="Ex: 2 min 30s"
+                value={field.value as string}
+                onChange={(e) => field.onChange(e.target.value)}
+                className="mt-1.5 w-full border-b border-black/20 bg-transparent py-1.5 text-sm outline-none focus:border-[#375e40]"
+              />
+            )}
+          />
         )}
-      />
+      </div>
 
       {/* Remover */}
       <button

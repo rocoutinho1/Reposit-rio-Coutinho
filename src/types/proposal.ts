@@ -14,6 +14,7 @@ export interface VideoGroup {
   customName?: string;
   format: string;
   duration: string;
+  customDuration?: string;
 }
 
 export interface VideoDeliverable {
