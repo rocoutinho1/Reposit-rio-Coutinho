@@ -55,6 +55,17 @@ export function saveToHistory(data: ProposalFormData): HistoryEntry {
   return entry;
 }
 
+export function importHistoryEntry(entry: HistoryEntry): void {
+  const history = loadHistory();
+  const existingIndex = history.findIndex((e) => e.id === entry.id);
+  if (existingIndex >= 0) {
+    history[existingIndex] = entry;
+  } else {
+    history.unshift(entry);
+  }
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
 export function deleteFromHistory(id: string): void {
   const history = loadHistory().filter((e) => e.id !== id);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
@@ -81,6 +92,25 @@ export async function loadCloudHistory(): Promise<HistoryEntry[]> {
   } catch {
     return [];
   }
+}
+
+export async function syncAllToCloud(entries: HistoryEntry[]): Promise<{ ok: number; failed: number }> {
+  let ok = 0;
+  let failed = 0;
+  for (const entry of entries) {
+    try {
+      const res = await fetch("/api/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry),
+      });
+      if (res.ok) ok++;
+      else failed++;
+    } catch {
+      failed++;
+    }
+  }
+  return { ok, failed };
 }
 
 export function mergeHistories(local: HistoryEntry[], cloud: HistoryEntry[]): HistoryEntry[] {

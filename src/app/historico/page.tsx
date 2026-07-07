@@ -1,8 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { HistoryEntry, loadHistory, deleteFromHistory, sortedHistory, loadCloudHistory, mergeHistories } from "@/lib/history";
+import { saveAs } from "file-saver";
+import {
+  HistoryEntry,
+  loadHistory,
+  deleteFromHistory,
+  sortedHistory,
+  loadCloudHistory,
+  mergeHistories,
+  syncAllToCloud,
+  importHistoryEntry,
+} from "@/lib/history";
 
 const MONTH_NAMES = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -50,6 +60,9 @@ export default function HistoricoPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
   const [openFolders, setOpenFolders] = useState<Set<string>>(new Set());
+  const [syncingIds, setSyncingIds] = useState<Set<string>>(new Set());
+  const [syncedIds, setSyncedIds] = useState<Set<string>>(new Set());
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const local = loadHistory();
@@ -79,6 +92,51 @@ export default function HistoricoPage() {
     router.push("/");
   }
 
+  async function handleSyncOne(entry: HistoryEntry) {
+    setSyncingIds((prev) => new Set(prev).add(entry.id));
+    const result = await syncAllToCloud([entry]);
+    setSyncingIds((prev) => {
+      const next = new Set(prev);
+      next.delete(entry.id);
+      return next;
+    });
+    if (result.ok > 0) {
+      setSyncedIds((prev) => new Set(prev).add(entry.id));
+    } else {
+      alert("Não foi possível enviar essa proposta para a nuvem. Tente pelo site publicado.");
+    }
+  }
+
+  function handleDownload(entry: HistoryEntry) {
+    const blob = new Blob([JSON.stringify(entry, null, 2)], { type: "application/json" });
+    const fileName = `proposta-${entry.client}-${entry.project}.json`.replace(/\s+/g, "-");
+    saveAs(blob, fileName);
+  }
+
+  async function refreshEntries() {
+    const local = loadHistory();
+    const cloud = await loadCloudHistory();
+    const merged = sortedHistory(mergeHistories(local, cloud));
+    setEntries(merged);
+    setOpenFolders(new Set(merged.map(getMonthKey)));
+  }
+
+  async function handleImportFile(file: File) {
+    try {
+      const text = await file.text();
+      const entry: HistoryEntry = JSON.parse(text);
+      if (!entry.id || !entry.data) {
+        alert("Arquivo inválido. Escolha um arquivo de backup gerado por esta tela.");
+        return;
+      }
+      importHistoryEntry(entry);
+      await refreshEntries();
+      alert("Proposta restaurada com sucesso.");
+    } catch {
+      alert("Não foi possível ler esse arquivo. Verifique se é um backup válido.");
+    }
+  }
+
   function handleDelete(id: string) {
     if (!confirm("Tem certeza que quer excluir esta proposta do histórico?")) return;
     deleteFromHistory(id);
@@ -100,12 +158,31 @@ export default function HistoricoPage() {
             <h1 className="text-base font-semibold tracking-tight text-black">Histórico de Propostas</h1>
             <p className="text-xs text-black/40">Organizado pelo mês do cabeçalho</p>
           </div>
-          <button
-            onClick={() => router.push("/")}
-            className="text-sm border border-black/20 text-black hover:bg-black/5 transition-colors px-4 py-2"
-          >
-            ← Nova Proposta
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => importInputRef.current?.click()}
+              className="text-sm border border-black/20 text-black hover:bg-black/5 transition-colors px-4 py-2"
+            >
+              Importar backup
+            </button>
+            <input
+              ref={importInputRef}
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleImportFile(file);
+                e.target.value = "";
+              }}
+            />
+            <button
+              onClick={() => router.push("/")}
+              className="text-sm border border-black/20 text-black hover:bg-black/5 transition-colors px-4 py-2"
+            >
+              ← Nova Proposta
+            </button>
+          </div>
         </div>
       </header>
 
@@ -162,6 +239,23 @@ export default function HistoricoPage() {
                             </p>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
+                            <button
+                              onClick={() => handleSyncOne(entry)}
+                              disabled={syncingIds.has(entry.id)}
+                              className="px-4 py-1.5 text-xs border border-[#375e40] text-[#375e40] hover:bg-[#375e40]/5 transition-colors disabled:opacity-40"
+                            >
+                              {syncingIds.has(entry.id)
+                                ? "Enviando..."
+                                : syncedIds.has(entry.id)
+                                ? "Enviado ✓"
+                                : "Enviar p/ nuvem"}
+                            </button>
+                            <button
+                              onClick={() => handleDownload(entry)}
+                              className="px-4 py-1.5 text-xs border border-black/15 text-black/45 hover:border-black/30 hover:text-black transition-colors"
+                            >
+                              Baixar backup
+                            </button>
                             <button
                               onClick={() => handleEdit(entry)}
                               className="px-4 py-1.5 text-xs border border-[#375e40] text-[#375e40] hover:bg-[#375e40]/5 transition-colors"
