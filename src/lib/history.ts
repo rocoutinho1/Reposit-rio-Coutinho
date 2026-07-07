@@ -51,16 +51,48 @@ export function saveToHistory(data: ProposalFormData): HistoryEntry {
   }
 
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  syncEntryToCloud(entry);
   return entry;
 }
 
 export function deleteFromHistory(id: string): void {
   const history = loadHistory().filter((e) => e.id !== id);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  deleteEntryFromCloud(id);
 }
 
-export function getHistoryEntry(id: string): HistoryEntry | null {
-  return loadHistory().find((e) => e.id === id) ?? null;
+function syncEntryToCloud(entry: HistoryEntry) {
+  fetch("/api/history", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(entry),
+  }).catch(() => {});
+}
+
+function deleteEntryFromCloud(id: string) {
+  fetch(`/api/history/${id}`, { method: "DELETE" }).catch(() => {});
+}
+
+export async function loadCloudHistory(): Promise<HistoryEntry[]> {
+  try {
+    const res = await fetch("/api/history");
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export function mergeHistories(local: HistoryEntry[], cloud: HistoryEntry[]): HistoryEntry[] {
+  const map = new Map<string, HistoryEntry>();
+  for (const entry of local) map.set(entry.id, entry);
+  for (const entry of cloud) {
+    const existing = map.get(entry.id);
+    if (!existing || entry.savedAt > existing.savedAt) {
+      map.set(entry.id, entry);
+    }
+  }
+  return Array.from(map.values());
 }
 
 export function sortedHistory(history: HistoryEntry[]): HistoryEntry[] {

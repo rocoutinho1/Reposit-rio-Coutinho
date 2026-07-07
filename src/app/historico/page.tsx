@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { HistoryEntry, loadHistory, deleteFromHistory, sortedHistory } from "@/lib/history";
+import { HistoryEntry, loadHistory, deleteFromHistory, sortedHistory, loadCloudHistory, mergeHistories } from "@/lib/history";
 
 const MONTH_NAMES = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -52,9 +52,16 @@ export default function HistoricoPage() {
   const [openFolders, setOpenFolders] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    const history = sortedHistory(loadHistory());
-    setEntries(history);
-    setOpenFolders(new Set(history.map(getMonthKey)));
+    const local = loadHistory();
+    const localSorted = sortedHistory(local);
+    setEntries(localSorted);
+    setOpenFolders(new Set(localSorted.map(getMonthKey)));
+
+    loadCloudHistory().then((cloud) => {
+      const merged = sortedHistory(mergeHistories(local, cloud));
+      setEntries(merged);
+      setOpenFolders(new Set(merged.map(getMonthKey)));
+    });
   }, []);
 
   function toggleFolder(key: string) {
@@ -75,10 +82,12 @@ export default function HistoricoPage() {
   function handleDelete(id: string) {
     if (!confirm("Tem certeza que quer excluir esta proposta do histórico?")) return;
     deleteFromHistory(id);
-    const history = sortedHistory(loadHistory());
-    setEntries(history);
-    const validKeys = new Set(history.map(getMonthKey));
-    setOpenFolders((prev) => new Set([...prev].filter((k) => validKeys.has(k))));
+    setEntries((prev) => {
+      const next = prev.filter((e) => e.id !== id);
+      const validKeys = new Set(next.map(getMonthKey));
+      setOpenFolders((prevFolders) => new Set([...prevFolders].filter((k) => validKeys.has(k))));
+      return next;
+    });
   }
 
   const groups = groupByMonth(entries);
