@@ -25,6 +25,7 @@ export interface Deliverables {
   video: VideoDeliverable;
   photoQuantity: number;
   rawFootageQuantity: number;
+  rawFootageValue: number;
 }
 
 export interface Processes {

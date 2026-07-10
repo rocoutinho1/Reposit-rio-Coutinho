@@ -29,7 +29,7 @@ const DEFAULT_VALUES: ProposalFormData = {
     contact: "contato@quadrosporsegundo.com.br",
   },
   aboutProject: "",
-  deliverables: { video: { groups: [] }, photoQuantity: 0, rawFootageQuantity: 0 },
+  deliverables: { video: { groups: [] }, photoQuantity: 0, rawFootageQuantity: 0, rawFootageValue: 0 },
   processes: { preProduction: [], production: [], postProduction: [] },
   customProcesses: [],
   team: {},

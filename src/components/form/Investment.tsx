@@ -157,13 +157,14 @@ export function Investment({ control }: Props) {
   const equipment = useWatch({ control, name: "equipment" }) || [];
   const feesRate = useWatch({ control, name: "feesRate" }) ?? 25;
   const discountRate = useWatch({ control, name: "discountRate" }) ?? 0;
+  const rawFootageValue = useWatch({ control, name: "deliverables.rawFootageValue" }) ?? 0;
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "customInvestmentItems",
   });
 
-  const summary = calcularInvestimento(team, logistics, equipment, feesRate, customTeam);
+  const summary = calcularInvestimento(team, logistics, equipment, feesRate, customTeam, rawFootageValue);
 
   return (
     <section>

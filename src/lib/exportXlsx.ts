@@ -125,8 +125,9 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   ws.getColumn(3).width = 16;
   ws.getColumn(4).width = 14;
 
-  const { team = {}, equipment = [], logistics, feesRate = 25 } = data;
-  const summary = calcularInvestimento(team, logistics, equipment, feesRate);
+  const { team = {}, equipment = [], logistics, feesRate = 25, deliverables } = data;
+  const rawFootageValue = deliverables?.rawFootageValue || 0;
+  const summary = calcularInvestimento(team, logistics, equipment, feesRate, [], rawFootageValue);
 
   // ── TÍTULO ──────────────────────────────────────────────────────────
   const titleRow = ws.addRow(["Planilha Orçamentária", "", "", ""]);
@@ -219,6 +220,10 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   const studioEnabled = logistics.studio?.enabled;
   const studioVal = logistics.studio?.value || 0;
   addDataRow(ws, "Locação", studioEnabled ? 1 : 0, studioVal, studioEnabled ? studioVal : 0);
+
+  if (rawFootageValue > 0) {
+    addDataRow(ws, "Material bruto", 1, rawFootageValue, rawFootageValue);
+  }
 
   addTotalRow(ws, summary.production + summary.equipment);
   addEmpty(ws);

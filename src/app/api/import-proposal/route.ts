@@ -40,7 +40,8 @@ ESTRUTURA DO JSON DE SAÍDA (inclua apenas o que encontrar):
       ]
     },
     "photoQuantity": 0,
-    "rawFootageQuantity": 0
+    "rawFootageQuantity": 0,
+    "rawFootageValue": 0
   },
   "processes": {
     "preProduction": ["proc_roteiro", "proc_moodboard"],

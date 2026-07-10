@@ -52,10 +52,11 @@ export function calcularInvestimento(
   logistics: Logistics,
   equipment: EquipmentItem[] = [],
   feesRate: number = 25,
-  customTeam: CustomTeamMember[] = []
+  customTeam: CustomTeamMember[] = [],
+  rawFootageValue: number = 0
 ): InvestmentSummary {
   const preProduction = calcularFase(team, "pre-production", customTeam);
-  const production = calcularFase(team, "production", customTeam);
+  const production = calcularFase(team, "production", customTeam) + (rawFootageValue || 0);
   const postProduction = calcularFase(team, "post-production", customTeam);
   const logisticsTotal = calcularLogistica(logistics);
   const equipmentTotal = calcularEquipamentos(equipment);

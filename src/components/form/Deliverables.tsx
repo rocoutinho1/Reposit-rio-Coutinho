@@ -52,21 +52,39 @@ export function Deliverables({ control }: Props) {
         {/* Material Bruto */}
         <div className="rounded-sm border border-black/8 p-4">
           <p className="mb-3 text-sm font-medium text-black">Material Bruto</p>
-          <Controller
-            name="deliverables.rawFootageQuantity"
-            control={control}
-            defaultValue={0}
-            render={({ field }) => (
-              <Input
-                label="Quantidade de vídeos brutos"
-                type="number"
-                min={0}
-                className="max-w-[220px]"
-                value={field.value}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            )}
-          />
+          <div className="flex flex-wrap gap-4">
+            <Controller
+              name="deliverables.rawFootageQuantity"
+              control={control}
+              defaultValue={0}
+              render={({ field }) => (
+                <Input
+                  label="Quantidade de vídeos brutos"
+                  type="number"
+                  min={0}
+                  className="max-w-[220px]"
+                  value={field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              )}
+            />
+            <Controller
+              name="deliverables.rawFootageValue"
+              control={control}
+              defaultValue={0}
+              render={({ field }) => (
+                <Input
+                  label="Valor do material bruto (R$)"
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  className="max-w-[220px]"
+                  value={field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              )}
+            />
+          </div>
         </div>
 
         {/* Fotos */}

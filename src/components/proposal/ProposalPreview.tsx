@@ -164,7 +164,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
   const feesPct = feesRate ?? 25;
   const discountPct = data.discountRate ?? 0;
   const customTeamList = customTeam || [];
-  const summary = calcularInvestimento(team || {}, logistics, equipment || [], feesPct, customTeamList);
+  const summary = calcularInvestimento(team || {}, logistics, equipment || [], feesPct, customTeamList, deliverables.rawFootageValue || 0);
   const phases: Phase[] = ["pre-production", "production", "post-production"];
 
   const labelFor = (arr: readonly { id: string; label: string }[], ids: string[]) =>
