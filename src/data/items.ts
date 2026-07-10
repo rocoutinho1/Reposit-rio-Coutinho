@@ -55,6 +55,7 @@ export const VIDEO_FORMATS = [
   { id: "vertical", label: "Vertical (1080x1920)" },
   { id: "horizontal", label: "Horizontal (1920x1080)" },
   { id: "quadrado", label: "Quadrado (1080x1080)" },
+  { id: "vertical-horizontal", label: "Vertical (1080x1920) e Horizontal (1920x1080)" },
 ] as const;
 
 export const VIDEO_DURATIONS = [
