@@ -1,5 +1,5 @@
 import { ProposalFormData } from "@/types/proposal";
-import { TEAM_ITEMS, PHASE_LABELS, Phase, VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS, INCLUDED_ITEMS, REVISION_OPTIONS, PRE_PRODUCTION_PROCESSES, PRODUCTION_PROCESSES, POST_PRODUCTION_PROCESSES } from "@/data/items";
+import { TEAM_ITEMS, PHASE_LABELS, Phase, VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS, INCLUDED_ITEMS, REVISION_OPTIONS, PRE_PRODUCTION_PROCESSES, PRODUCTION_PROCESSES, POST_PRODUCTION_PROCESSES, TAX_DISCLOSURE_TEXT } from "@/data/items";
 import { calcularInvestimento, calcularFase, formatCurrency } from "@/lib/calculations";
 import { Document, Packer, Paragraph, HeadingLevel, Table, TableRow, TableCell, BorderStyle, AlignmentType, TextRun, WidthType } from "docx";
 import { saveAs } from "file-saver";
@@ -137,7 +137,7 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
   const hasEquipment = (equipment || []).length > 0;
   const hasIncluded = includedItems.included.length > 0 || includedItems.excluded.length > 0;
   const hasLogistics = logistics.displacement.enabled || logistics.meals.enabled || logistics.studio?.enabled;
-  const hasConditions = !!(generalConditions.validityStart || generalConditions.paymentMethod || generalConditions.revisions);
+  const hasConditions = true;
 
   // Dynamic section numbering
   const sectionNums = (() => {
@@ -547,7 +547,10 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
     if (generalConditions.revisions) {
       sections.push(createRowTable("Alterações", REVISION_OPTIONS.find((r) => r.id === generalConditions.revisions)?.label || ""));
     }
-    sections.push(new Paragraph({ text: "", spacing: { after: 120 } }));
+    sections.push(new Paragraph({
+      children: [new TextRun({ text: TAX_DISCLOSURE_TEXT, size: 18, color: GRAY_TEXT })],
+      spacing: { before: 120, after: 120 },
+    }));
   }
 
   // 11. Investment

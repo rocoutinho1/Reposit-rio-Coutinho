@@ -13,6 +13,7 @@ import {
   PRE_PRODUCTION_PROCESSES,
   PRODUCTION_PROCESSES,
   POST_PRODUCTION_PROCESSES,
+  TAX_DISCLOSURE_TEXT,
 } from "@/data/items";
 import { calcularInvestimento, calcularFase, formatCurrency } from "@/lib/calculations";
 
@@ -182,7 +183,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
   const hasEquipment = (equipment || []).length > 0;
   const hasIncluded = includedItems.included.length > 0 || includedItems.excluded.length > 0;
   const hasLogistics = logistics.displacement.enabled || logistics.meals.enabled || logistics.studio?.enabled;
-  const hasConditions = !!(generalConditions.validityStart || generalConditions.paymentMethod || generalConditions.revisions);
+  const hasConditions = true;
 
   // Numeração dinâmica: só conta seções que realmente aparecem
   const sectionNums = (() => {
@@ -682,21 +683,30 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
           <SectionBlock>
             <SectionHeading number={sectionNums.conditions} title="Condições Gerais" c={c} />
             <div className="space-y-1">
-              <Row
-                label="Validade"
-                value={formatDateRange(generalConditions.validityStart, generalConditions.validityEnd)}
-                c={c}
-              />
-              <div className="flex gap-4 py-2.5 border-b last:border-0" style={{ borderColor: c.border }}>
-                <span className="w-36 shrink-0 text-xs font-medium uppercase tracking-wide" style={{ color: c.textMuted }}>Pagamento</span>
-                <span className="text-sm whitespace-pre-wrap" style={{ color: c.text }}>{generalConditions.paymentMethod}</span>
-              </div>
-              <Row
-                label="Alterações"
-                value={REVISION_OPTIONS.find((r) => r.id === generalConditions.revisions)?.label || ""}
-                c={c}
-              />
+              {generalConditions.validityStart && (
+                <Row
+                  label="Validade"
+                  value={formatDateRange(generalConditions.validityStart, generalConditions.validityEnd)}
+                  c={c}
+                />
+              )}
+              {generalConditions.paymentMethod && (
+                <div className="flex gap-4 py-2.5 border-b last:border-0" style={{ borderColor: c.border }}>
+                  <span className="w-36 shrink-0 text-xs font-medium uppercase tracking-wide" style={{ color: c.textMuted }}>Pagamento</span>
+                  <span className="text-sm whitespace-pre-wrap" style={{ color: c.text }}>{generalConditions.paymentMethod}</span>
+                </div>
+              )}
+              {generalConditions.revisions && (
+                <Row
+                  label="Alterações"
+                  value={REVISION_OPTIONS.find((r) => r.id === generalConditions.revisions)?.label || ""}
+                  c={c}
+                />
+              )}
             </div>
+            <p className="text-xs leading-relaxed whitespace-pre-wrap mt-3" style={{ color: c.textMuted }}>
+              {TAX_DISCLOSURE_TEXT}
+            </p>
           </SectionBlock>
         )}
 

@@ -113,3 +113,6 @@ export const REVISION_OPTIONS = [
   { id: "1_rodada", label: "1 rodada por vídeo" },
   { id: "2_rodadas", label: "2 rodadas por vídeo" },
 ] as const;
+
+export const TAX_DISCLOSURE_TEXT =
+  "Tributação: Empresa optante pelo Simples Nacional, nos termos da Lei Complementar nº 123/2006. Os tributos incidentes sobre a prestação dos serviços são recolhidos de forma unificada por meio do Documento de Arrecadação do Simples Nacional (DAS), não havendo destaque individual de IRPJ, CSLL, PIS, COFINS, ISS e demais tributos abrangidos pelo regime nesta proposta comercial.";
