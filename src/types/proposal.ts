@@ -87,6 +87,10 @@ export interface Logistics {
     enabled: boolean;
     value: number;
   };
+  hosting: {
+    enabled: boolean;
+    value: number;
+  };
 }
 
 export interface GeneralConditions {

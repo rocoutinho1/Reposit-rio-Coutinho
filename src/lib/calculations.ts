@@ -40,6 +40,9 @@ export function calcularLogistica(logistics: Logistics): number {
   if (logistics.studio?.enabled) {
     total += logistics.studio.value;
   }
+  if (logistics.hosting?.enabled) {
+    total += logistics.hosting.value;
+  }
   return total;
 }
 

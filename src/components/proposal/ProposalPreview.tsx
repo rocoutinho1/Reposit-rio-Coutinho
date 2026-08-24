@@ -182,7 +182,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
 
   const hasEquipment = (equipment || []).length > 0;
   const hasIncluded = includedItems.included.length > 0 || includedItems.excluded.length > 0;
-  const hasLogistics = logistics.displacement.enabled || logistics.meals.enabled || logistics.studio?.enabled;
+  const hasLogistics = logistics.displacement.enabled || logistics.meals.enabled || logistics.studio?.enabled || logistics.hosting?.enabled;
   const hasConditions = true;
 
   // Numeração dinâmica: só conta seções que realmente aparecem
@@ -671,6 +671,13 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                 <Row
                   label="Estúdio de gravação"
                   value={formatCurrency(logistics.studio.value)}
+                  c={c}
+                />
+              )}
+              {logistics.hosting?.enabled && (
+                <Row
+                  label="Hospedagem"
+                  value={formatCurrency(logistics.hosting.value)}
                   c={c}
                 />
               )}

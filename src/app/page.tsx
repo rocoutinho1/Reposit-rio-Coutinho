@@ -42,6 +42,7 @@ const DEFAULT_VALUES: ProposalFormData = {
     displacement: { enabled: false, ratePerKm: 0, kilometers: 0, customValue: 0 },
     meals: { enabled: false, ratePerPerson: 0, people: 0 },
     studio: { enabled: false, value: 0 },
+    hosting: { enabled: false, value: 0 },
   },
   generalConditions: { validityStart: "", validityEnd: "", paymentMethod: "", revisions: "" },
   feesRate: 25,

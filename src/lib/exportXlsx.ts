@@ -258,6 +258,10 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   const mealsRate = logistics.meals.ratePerPerson || 0;
   addDataRow(ws, "Alimentação", mealsPeople, mealsRate, mealsEnabled ? mealsPeople * mealsRate : 0);
 
+  const hostingEnabled = logistics.hosting?.enabled;
+  const hostingValue = logistics.hosting?.value || 0;
+  addDataRow(ws, "Hospedagem", hostingEnabled ? 1 : 0, hostingValue, hostingEnabled ? hostingValue : 0);
+
   addTotalRow(ws, summary.logistics);
 
   // ── DOWNLOAD ──────────────────────────────────────────────────────────

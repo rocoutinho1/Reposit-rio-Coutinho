@@ -15,12 +15,14 @@ export function Logistics({ control }: Props) {
   const displacementEnabled = useWatch({ control, name: "logistics.displacement.enabled" });
   const mealsEnabled = useWatch({ control, name: "logistics.meals.enabled" });
   const studioEnabled = useWatch({ control, name: "logistics.studio.enabled" });
+  const hostingEnabled = useWatch({ control, name: "logistics.hosting.enabled" });
   const ratePerKm = useWatch({ control, name: "logistics.displacement.ratePerKm" }) || 0;
   const kilometers = useWatch({ control, name: "logistics.displacement.kilometers" }) || 0;
   const displacementCustomValue = useWatch({ control, name: "logistics.displacement.customValue" }) || 0;
   const ratePerPerson = useWatch({ control, name: "logistics.meals.ratePerPerson" }) || 0;
   const people = useWatch({ control, name: "logistics.meals.people" }) || 0;
   const studioValue = useWatch({ control, name: "logistics.studio.value" }) || 0;
+  const hostingValue = useWatch({ control, name: "logistics.hosting.value" }) || 0;
 
   return (
     <section>
@@ -182,6 +184,45 @@ export function Logistics({ control }: Props) {
               <div className="mt-2 text-right">
                 <p className="text-sm text-black/50">Subtotal estúdio:</p>
                 <p className="text-base font-semibold text-black">{formatCurrency(studioValue)}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-sm border border-black/8 p-4">
+          <Controller
+            name="logistics.hosting.enabled"
+            control={control}
+            defaultValue={false}
+            render={({ field }) => (
+              <CheckboxItem
+                id="logistics_hosting"
+                label="Hospedagem"
+                checked={!!field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          {hostingEnabled && (
+            <div className="mt-4">
+              <Controller
+                name="logistics.hosting.value"
+                control={control}
+                defaultValue={0}
+                render={({ field }) => (
+                  <Input
+                    label="Valor da hospedagem (R$)"
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={field.value || ""}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                )}
+              />
+              <div className="mt-2 text-right">
+                <p className="text-sm text-black/50">Subtotal hospedagem:</p>
+                <p className="text-base font-semibold text-black">{formatCurrency(hostingValue)}</p>
               </div>
             </div>
           )}
