@@ -1,7 +1,7 @@
 import { TEAM_ITEMS } from "@/data/items";
-import type { TeamSelection, Logistics, InvestmentSummary, EquipmentItem, CustomTeamMember } from "@/types/proposal";
+import type { TeamSelection, Logistics, InvestmentSummary, EquipmentItem, CustomTeamMember, ProposalFormData } from "@/types/proposal";
 
-const TAX_RATE = 0.08;
+export const DEFAULT_TAX_RATE = 8;
 
 export function calcularFase(
   team: TeamSelection,
@@ -56,7 +56,8 @@ export function calcularInvestimento(
   equipment: EquipmentItem[] = [],
   feesRate: number = 25,
   customTeam: CustomTeamMember[] = [],
-  rawFootageValue: number = 0
+  rawFootageValue: number = 0,
+  taxRate: number = DEFAULT_TAX_RATE
 ): InvestmentSummary {
   const preProduction = calcularFase(team, "pre-production", customTeam);
   const production = calcularFase(team, "production", customTeam) + (rawFootageValue || 0);
@@ -67,7 +68,7 @@ export function calcularInvestimento(
   const subtotal = preProduction + production + postProduction + logisticsTotal + equipmentTotal;
   const fees = subtotal * (feesRate / 100);
   const taxBase = preProduction + production + postProduction + logisticsTotal + equipmentTotal + fees;
-  const taxes = taxBase * TAX_RATE;
+  const taxes = taxBase * (taxRate / 100);
   const total = subtotal + fees + taxes;
 
   return {
@@ -81,6 +82,18 @@ export function calcularInvestimento(
     fees,
     total,
   };
+}
+
+export function calcularInvestimentoFromData(data: ProposalFormData): InvestmentSummary {
+  return calcularInvestimento(
+    data.team || {},
+    data.logistics,
+    data.equipment || [],
+    data.feesRate ?? 25,
+    data.customTeam || [],
+    data.deliverables?.rawFootageValue || 0,
+    data.taxRate ?? DEFAULT_TAX_RATE
+  );
 }
 
 export function formatCurrency(value: number): string {

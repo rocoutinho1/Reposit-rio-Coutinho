@@ -3,7 +3,7 @@
 import { Control, useWatch, Controller, useFieldArray } from "react-hook-form";
 import { ProposalFormData } from "@/types/proposal";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { calcularInvestimento, formatCurrency } from "@/lib/calculations";
+import { calcularInvestimento, formatCurrency, DEFAULT_TAX_RATE } from "@/lib/calculations";
 
 interface Props {
   control: Control<ProposalFormData>;
@@ -156,6 +156,7 @@ export function Investment({ control }: Props) {
   };
   const equipment = useWatch({ control, name: "equipment" }) || [];
   const feesRate = useWatch({ control, name: "feesRate" }) ?? 25;
+  const taxRate = useWatch({ control, name: "taxRate" }) ?? DEFAULT_TAX_RATE;
   const discountRate = useWatch({ control, name: "discountRate" }) ?? 0;
   const rawFootageValue = useWatch({ control, name: "deliverables.rawFootageValue" }) ?? 0;
 
@@ -164,7 +165,7 @@ export function Investment({ control }: Props) {
     name: "customInvestmentItems",
   });
 
-  const summary = calcularInvestimento(team, logistics, equipment, feesRate, customTeam, rawFootageValue);
+  const summary = calcularInvestimento(team, logistics, equipment, feesRate, customTeam, rawFootageValue, taxRate);
 
   return (
     <section>
@@ -191,6 +192,29 @@ export function Investment({ control }: Props) {
             )}
           />
           <span className="text-xs text-black/40">% sobre o subtotal</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <label className="text-xs font-medium uppercase tracking-wider text-black/60 whitespace-nowrap">
+            Impostos (%)
+          </label>
+          <Controller
+            name="taxRate"
+            control={control}
+            defaultValue={DEFAULT_TAX_RATE}
+            render={({ field }) => (
+              <input
+                type="number"
+                min={0}
+                max={100}
+                step={0.01}
+                value={field.value ?? DEFAULT_TAX_RATE}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+                className="w-20 border-b border-black/20 bg-transparent py-1 text-sm outline-none focus:border-[#375e40] text-center"
+              />
+            )}
+          />
+          <span className="text-xs text-black/40">% sobre o subtotal + honorários</span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -233,7 +257,7 @@ export function Investment({ control }: Props) {
           </div>
           <div className="px-5">
             <Line label={`Honorários (${feesRate ?? 25}%)`} value={summary.fees} dimmed />
-            <Line label={`Impostos (8%)`} value={summary.taxes} dimmed />
+            <Line label={`Impostos (${taxRate}%)`} value={summary.taxes} dimmed />
           </div>
 
           <div className="border-t-2 border-[#375e40] bg-black/2 px-5 py-4">

@@ -2,7 +2,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { ProposalFormData } from "@/types/proposal";
 import { TEAM_ITEMS } from "@/data/items";
-import { calcularInvestimento } from "./calculations";
+import { calcularInvestimentoFromData } from "./calculations";
 
 const TAX_RATE = 0.08;
 
@@ -125,9 +125,9 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   ws.getColumn(3).width = 16;
   ws.getColumn(4).width = 14;
 
-  const { team = {}, equipment = [], logistics, feesRate = 25, deliverables } = data;
+  const { team = {}, equipment = [], logistics, deliverables } = data;
   const rawFootageValue = deliverables?.rawFootageValue || 0;
-  const summary = calcularInvestimento(team, logistics, equipment, feesRate, [], rawFootageValue);
+  const summary = calcularInvestimentoFromData(data);
 
   // ── TÍTULO ──────────────────────────────────────────────────────────
   const titleRow = ws.addRow(["Planilha Orçamentária", "", "", ""]);

@@ -46,6 +46,7 @@ const DEFAULT_VALUES: ProposalFormData = {
   },
   generalConditions: { validityStart: "", validityEnd: "", paymentMethod: "", revisions: "" },
   feesRate: 25,
+  taxRate: 8,
   discountRate: 0,
   customInvestmentItems: [],
 };

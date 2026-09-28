@@ -15,7 +15,7 @@ import {
   POST_PRODUCTION_PROCESSES,
   TAX_DISCLOSURE_TEXT,
 } from "@/data/items";
-import { calcularInvestimento, calcularFase, formatCurrency } from "@/lib/calculations";
+import { calcularInvestimentoFromData, calcularFase, formatCurrency } from "@/lib/calculations";
 
 interface Props {
   data: ProposalFormData;
@@ -159,13 +159,12 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
   const {
     header, aboutProject, deliverables, processes, customProcesses,
     team, customTeam, equipment, includedItems, schedule, clientResponsibilities,
-    logistics, generalConditions, feesRate, customInvestmentItems,
+    logistics, generalConditions, customInvestmentItems,
   } = data;
 
-  const feesPct = feesRate ?? 25;
   const discountPct = data.discountRate ?? 0;
   const customTeamList = customTeam || [];
-  const summary = calcularInvestimento(team || {}, logistics, equipment || [], feesPct, customTeamList, deliverables.rawFootageValue || 0);
+  const summary = calcularInvestimentoFromData(data);
   const phases: Phase[] = ["pre-production", "production", "post-production"];
 
   const labelFor = (arr: readonly { id: string; label: string }[], ids: string[]) =>
@@ -726,8 +725,8 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
             <InvestmentLine label="Pós-produção" value={summary.postProduction} c={c} />
             {summary.equipment > 0 && <InvestmentLine label="Equipamentos" value={summary.equipment} c={c} />}
             {summary.logistics > 0 && <InvestmentLine label="Logística" value={summary.logistics} c={c} />}
-            <InvestmentLine label={`Honorários (${feesPct}%)`} value={summary.fees} sub c={c} />
-            <InvestmentLine label="Impostos (8%)" value={summary.taxes} sub c={c} />
+            <InvestmentLine label="Honorários" value={summary.fees} sub c={c} />
+            <InvestmentLine label="Impostos" value={summary.taxes} sub c={c} />
             <InvestmentLine label="Valor Total" value={summary.total} total c={c} />
 
             {discountPct > 0 && (() => {

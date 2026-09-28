@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ProposalFormData } from "@/types/proposal";
 import { ProposalPreview } from "@/components/proposal/ProposalPreview";
 import { TEAM_ITEMS, PHASE_LABELS, Phase } from "@/data/items";
-import { calcularInvestimento, calcularFase } from "@/lib/calculations";
+import { calcularInvestimentoFromData, calcularFase, DEFAULT_TAX_RATE } from "@/lib/calculations";
 import { exportarPlanilha } from "@/lib/exportXlsx";
 
 export default function PreviewPage() {
@@ -157,7 +157,7 @@ function gerarPlanilha(data: ProposalFormData): string {
   const { header, team, equipment, logistics, generalConditions, feesRate, discountRate } = data;
   const feesPct = feesRate ?? 25;
   const discountPct = discountRate ?? 0;
-  const summary = calcularInvestimento(team || {}, logistics, equipment || [], feesPct);
+  const summary = calcularInvestimentoFromData(data);
   const phases: Phase[] = ["pre-production", "production", "post-production"];
 
   let csv = "";
@@ -231,7 +231,7 @@ function gerarPlanilha(data: ProposalFormData): string {
   if (summary.logistics > 0) csv += row("Logística", summary.logistics);
   csv += row("Subtotal", summary.subtotal);
   csv += row(`Honorários (${feesPct}%)`, summary.fees);
-  csv += row("Impostos (8%)", summary.taxes);
+  csv += row(`Impostos (${data.taxRate ?? DEFAULT_TAX_RATE}%)`, summary.taxes);
   csv += row("TOTAL", summary.total);
   if (discountPct > 0) {
     const discountAmount = summary.total * (discountPct / 100);

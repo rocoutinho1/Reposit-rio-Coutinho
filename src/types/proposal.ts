@@ -126,6 +126,7 @@ export interface ProposalFormData {
   logistics: Logistics;
   generalConditions: GeneralConditions;
   feesRate: number;
+  taxRate: number;
   discountRate: number;
   customInvestmentItems: CustomInvestmentItem[];
 }

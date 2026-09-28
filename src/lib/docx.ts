@@ -1,6 +1,6 @@
 import { ProposalFormData } from "@/types/proposal";
 import { TEAM_ITEMS, PHASE_LABELS, Phase, VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS, INCLUDED_ITEMS, REVISION_OPTIONS, PRE_PRODUCTION_PROCESSES, PRODUCTION_PROCESSES, POST_PRODUCTION_PROCESSES, TAX_DISCLOSURE_TEXT } from "@/data/items";
-import { calcularInvestimento, calcularFase, formatCurrency } from "@/lib/calculations";
+import { calcularInvestimentoFromData, calcularFase, formatCurrency } from "@/lib/calculations";
 import { Document, Packer, Paragraph, HeadingLevel, Table, TableRow, TableCell, BorderStyle, AlignmentType, TextRun, WidthType } from "docx";
 import { saveAs } from "file-saver";
 
@@ -121,8 +121,7 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
     feesRate,
   } = data;
 
-  const feesPct = feesRate ?? 25;
-  const summary = calcularInvestimento(team || {}, logistics, equipment || [], feesPct);
+  const summary = calcularInvestimentoFromData(data);
   const phases: Phase[] = ["pre-production", "production", "post-production"];
 
   const labelFor = (arr: readonly { id: string; label: string }[], ids: string[]) =>
@@ -625,7 +624,7 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
         new TableCell({
           children: [
             new Paragraph({
-              children: [new TextRun({ text: `Honorários (${feesPct}%)`, color: GRAY_TEXT })],
+              children: [new TextRun({ text: "Honorários", color: GRAY_TEXT })],
             }),
           ],
         }),
@@ -644,7 +643,7 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
         new TableCell({
           children: [
             new Paragraph({
-              children: [new TextRun({ text: "Impostos (8%)", color: GRAY_TEXT })],
+              children: [new TextRun({ text: "Impostos", color: GRAY_TEXT })],
             }),
           ],
         }),
