@@ -45,10 +45,12 @@ export default function PreviewPage() {
   return (
     <>
       <style>{`
-        @page { margin: 0; margin-top: 60px; margin-bottom: 60px; }
-        @page :first { margin-top: 0; }
+        /* Zero page margins stop the browser from printing its header/footer (URL, date, page number) */
+        @page { margin: 0; }
         .print-page-header { display: none; }
+        .print-spacer { height: 0; }
         @media print {
+          .print-spacer { height: 60px; }
           .no-print { display: none !important; }
           html {
             background: ${bgColor} !important;
@@ -67,7 +69,7 @@ export default function PreviewPage() {
             min-height: unset !important;
           }
           .print-area {
-            padding: 2cm !important;
+            padding: 0 2cm !important;
             margin: 0 !important;
             box-shadow: none !important;
             background: ${bgColor} !important;
@@ -127,7 +129,14 @@ export default function PreviewPage() {
             className="print-area shadow-sm p-6 sm:p-10"
             style={{ backgroundColor: bgColor }}
           >
-            <ProposalPreview data={data} darkMode={darkMode} />
+            {/* thead/tfoot repeat on every printed page, replacing the page margins */}
+            <table className="w-full border-collapse">
+              <thead><tr><td className="p-0"><div className="print-spacer" /></td></tr></thead>
+              <tbody><tr><td className="p-0">
+                <ProposalPreview data={data} darkMode={darkMode} />
+              </td></tr></tbody>
+              <tfoot><tr><td className="p-0"><div className="print-spacer" /></td></tr></tfoot>
+            </table>
           </div>
         </div>
       </div>
