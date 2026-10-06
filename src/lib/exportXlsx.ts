@@ -1,7 +1,7 @@
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { ProposalFormData } from "@/types/proposal";
-import { TEAM_ITEMS } from "@/data/items";
+import { TEAM_ITEMS, rawFootageTypeLabel } from "@/data/items";
 import { calcularInvestimentoFromData } from "./calculations";
 
 const TAX_RATE = 0.08;
@@ -222,7 +222,7 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   addDataRow(ws, "Locação", studioEnabled ? 1 : 0, studioVal, studioEnabled ? studioVal : 0);
 
   if (rawFootageValue > 0) {
-    addDataRow(ws, "Material bruto", 1, rawFootageValue, rawFootageValue);
+    addDataRow(ws, `Material bruto (${rawFootageTypeLabel(deliverables?.rawFootageType)})`, 1, rawFootageValue, rawFootageValue);
   }
 
   addTotalRow(ws, summary.production + summary.equipment);

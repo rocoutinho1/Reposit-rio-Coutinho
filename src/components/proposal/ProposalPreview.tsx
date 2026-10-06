@@ -14,6 +14,7 @@ import {
   PRODUCTION_PROCESSES,
   POST_PRODUCTION_PROCESSES,
   TAX_DISCLOSURE_TEXT,
+  rawFootageTypeLabel,
 } from "@/data/items";
 import { calcularInvestimentoFromData, calcularFase, formatCurrency } from "@/lib/calculations";
 
@@ -166,6 +167,9 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
   const customTeamList = customTeam || [];
   const summary = calcularInvestimentoFromData(data);
   const phases: Phase[] = ["pre-production", "production", "post-production"];
+  const rawFootageValue = deliverables.rawFootageValue || 0;
+  const rawFootageQuantity = deliverables.rawFootageQuantity || 0;
+  const rawFootageLabel = `Material bruto (${rawFootageTypeLabel(deliverables.rawFootageType)})`;
 
   const labelFor = (arr: readonly { id: string; label: string }[], ids: string[]) =>
     arr.filter((i) => ids.includes(i.id)).map((i) => i.label);
@@ -310,9 +314,9 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                 </div>
               );
             })()}
-            {(deliverables.rawFootageQuantity ?? 0) > 0 && (
+            {(rawFootageQuantity > 0 || rawFootageValue > 0) && (
               <p className="text-sm" style={{ color: c.text }}>
-                Material bruto — {deliverables.rawFootageQuantity} vídeo{deliverables.rawFootageQuantity > 1 ? "s" : ""}
+                {rawFootageLabel}{rawFootageQuantity > 0 ? ` — ${rawFootageQuantity} arquivo${rawFootageQuantity > 1 ? "s" : ""}` : ""}
               </p>
             )}
           {(deliverables.photoQuantity ?? 0) > 0 && (
@@ -383,8 +387,9 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
             {phases.map((phase) => {
               const items = TEAM_ITEMS.filter((i) => i.phase === phase && team?.[i.id]?.selected);
               const customItems = customTeamList.filter((m) => m.phase === phase);
-              if (!items.length && !customItems.length) return null;
-              const phaseTotal = calcularFase(team || {}, phase, customTeamList);
+              const showRawFootage = phase === "production" && rawFootageValue > 0;
+              if (!items.length && !customItems.length && !showRawFootage) return null;
+              const phaseTotal = calcularFase(team || {}, phase, customTeamList) + (showRawFootage ? rawFootageValue : 0);
               return (
                 <div key={phase} style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: c.textMuted }}>{PHASE_LABELS[phase]}</p>
@@ -489,6 +494,15 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                             </tr>
                           );
                         })}
+                        {showRawFootage && (
+                          <tr className="border-b" style={{ borderColor: c.borderFaint }}>
+                            <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{rawFootageLabel}</td>
+                            <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.textFaint }}>—</td>
+                            <td className="py-2.5 text-right text-sm align-middle pr-4" style={{ color: c.textFaint }}>—</td>
+                            <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.textFaint }}>—</td>
+                            <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency(rawFootageValue)}</td>
+                          </tr>
+                        )}
                         <tr>
                           <td colSpan={4} className="pt-4 pb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: c.textMuted }}>
                             Total {PHASE_LABELS[phase]}

@@ -2,7 +2,7 @@
 
 import { Control, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { ProposalFormData } from "@/types/proposal";
-import { VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS } from "@/data/items";
+import { VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS, RAW_FOOTAGE_TYPES } from "@/data/items";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { Input } from "@/components/ui/Input";
 
@@ -54,12 +54,31 @@ export function Deliverables({ control }: Props) {
           <p className="mb-3 text-sm font-medium text-black">Material Bruto</p>
           <div className="flex flex-wrap gap-4">
             <Controller
+              name="deliverables.rawFootageType"
+              control={control}
+              defaultValue="video"
+              render={({ field }) => (
+                <div className="flex w-full max-w-[220px] flex-col gap-1">
+                  <label className="text-xs font-medium text-black uppercase tracking-wider opacity-60">Tipo</label>
+                  <select
+                    value={field.value ?? "video"}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    className="w-full border-b border-black/20 bg-transparent py-2 text-sm text-black outline-none focus:border-[#375e40]"
+                  >
+                    {RAW_FOOTAGE_TYPES.map((t) => (
+                      <option key={t.id} value={t.id}>{t.label}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            />
+            <Controller
               name="deliverables.rawFootageQuantity"
               control={control}
               defaultValue={0}
               render={({ field }) => (
                 <Input
-                  label="Quantidade de vídeos brutos"
+                  label="Quantidade (opcional)"
                   type="number"
                   min={0}
                   className="max-w-[220px]"

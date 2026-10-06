@@ -1,5 +1,5 @@
 import { ProposalFormData } from "@/types/proposal";
-import { TEAM_ITEMS, PHASE_LABELS, Phase, VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS, INCLUDED_ITEMS, REVISION_OPTIONS, PRE_PRODUCTION_PROCESSES, PRODUCTION_PROCESSES, POST_PRODUCTION_PROCESSES, TAX_DISCLOSURE_TEXT } from "@/data/items";
+import { TEAM_ITEMS, PHASE_LABELS, Phase, VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS, INCLUDED_ITEMS, REVISION_OPTIONS, PRE_PRODUCTION_PROCESSES, PRODUCTION_PROCESSES, POST_PRODUCTION_PROCESSES, TAX_DISCLOSURE_TEXT, rawFootageTypeLabel } from "@/data/items";
 import { calcularInvestimentoFromData, calcularFase, formatCurrency } from "@/lib/calculations";
 import { Document, Packer, Paragraph, HeadingLevel, Table, TableRow, TableCell, BorderStyle, AlignmentType, TextRun, WidthType } from "docx";
 import { saveAs } from "file-saver";
@@ -217,6 +217,16 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
       if (g.duration) tags.push(durationLabel(g.duration));
       sections.push(new Paragraph({ text: `${g.quantity}× ${tags.join(" • ")}`, spacing: { after: 120 } }));
     }
+  }
+  const rawFootageQuantity = deliverables.rawFootageQuantity || 0;
+  if (rawFootageQuantity > 0 || (deliverables.rawFootageValue || 0) > 0) {
+    const quantityText = rawFootageQuantity > 0 ? ` — ${rawFootageQuantity} arquivo${rawFootageQuantity > 1 ? "s" : ""}` : "";
+    sections.push(
+      new Paragraph({
+        text: `Material bruto (${rawFootageTypeLabel(deliverables.rawFootageType)})${quantityText}`,
+        spacing: { after: 120 },
+      })
+    );
   }
   if ((deliverables.photoQuantity ?? 0) > 0) {
     sections.push(new Paragraph({ text: `Fotos — ${deliverables.photoQuantity} fotos`, spacing: { after: 240 } }));

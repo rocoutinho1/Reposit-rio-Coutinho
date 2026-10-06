@@ -70,6 +70,16 @@ export const VIDEO_DURATIONS = [
   { id: "3min30", label: "Até 3 minutos e 30 segundos" },
 ] as const;
 
+export const RAW_FOOTAGE_TYPES = [
+  { id: "video", label: "Vídeo" },
+  { id: "photo", label: "Foto" },
+  { id: "both", label: "Vídeo e foto" },
+] as const;
+
+export function rawFootageTypeLabel(type?: string): string {
+  return RAW_FOOTAGE_TYPES.find((t) => t.id === type)?.label || "Vídeo";
+}
+
 export const PRE_PRODUCTION_PROCESSES = [
   { id: "proc_roteiro", label: "Produção de roteiro" },
   { id: "proc_moodboard", label: "Produção de moodboard" },
