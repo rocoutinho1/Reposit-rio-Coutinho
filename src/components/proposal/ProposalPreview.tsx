@@ -396,14 +396,12 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                   {phase === "post-production" ? (
                     <table className="w-full text-sm">
                       <colgroup>
-                        <col style={{ width: "50%" }} />
-                        <col style={{ width: "25%" }} />
-                        <col style={{ width: "25%" }} />
+                        <col style={{ width: "70%" }} />
+                        <col style={{ width: "30%" }} />
                       </colgroup>
                       <thead>
                         <tr className="border-b" style={{ borderColor: c.border }}>
                           <th className="text-left pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Profissional</th>
-                          <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Horas</th>
                           <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Valor Total</th>
                         </tr>
                       </thead>
@@ -416,7 +414,6 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           return (
                             <tr key={item.id} className="border-b" style={{ borderColor: c.borderFaint }}>
                               <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{item.label}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{totalHours}h</td>
                               <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency(totalValue)}</td>
                             </tr>
                           );
@@ -426,13 +423,12 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           return (
                             <tr key={`custom-${i}`} className="border-b" style={{ borderColor: c.borderFaint }}>
                               <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{m.label || "—"}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{totalHours}h</td>
                               <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency((m.ratePerHour || 0) * totalHours)}</td>
                             </tr>
                           );
                         })}
                         <tr>
-                          <td colSpan={2} className="pt-4 pb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: c.textMuted }}>
+                          <td colSpan={1} className="pt-4 pb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: c.textMuted }}>
                             Total {PHASE_LABELS[phase]}
                           </td>
                           <td className="pt-4 pb-1 text-right text-sm font-bold" style={{ color: c.text }}>{formatCurrency(phaseTotal)}</td>
@@ -514,16 +510,12 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                   ) : (
                     <table className="w-full text-sm">
                       <colgroup>
-                        <col style={{ width: "40%" }} />
-                        <col style={{ width: "15%" }} />
-                        <col style={{ width: "20%" }} />
-                        <col style={{ width: "25%" }} />
+                        <col style={{ width: "70%" }} />
+                        <col style={{ width: "30%" }} />
                       </colgroup>
                       <thead>
                         <tr className="border-b" style={{ borderColor: c.border }}>
                           <th className="text-left pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Profissional</th>
-                          <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Diárias</th>
-                          <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Horas/Diária</th>
                           <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Valor Total</th>
                         </tr>
                       </thead>
@@ -536,8 +528,6 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           return (
                             <tr key={item.id} className="border-b" style={{ borderColor: c.borderFaint }}>
                               <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{item.label}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{member?.diarias || 0}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{member?.hoursPerDiaria || 0}h</td>
                               <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency(totalValue)}</td>
                             </tr>
                           );
@@ -547,14 +537,12 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           return (
                             <tr key={`custom-${i}`} className="border-b" style={{ borderColor: c.borderFaint }}>
                               <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{m.label || "—"}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{m.diarias || 0}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{m.hoursPerDiaria || 0}h</td>
                               <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency((m.ratePerHour || 0) * totalHours)}</td>
                             </tr>
                           );
                         })}
                         <tr>
-                          <td colSpan={3} className="pt-4 pb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: c.textMuted }}>
+                          <td colSpan={1} className="pt-4 pb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: c.textMuted }}>
                             Total {PHASE_LABELS[phase]}
                           </td>
                           <td className="pt-4 pb-1 text-right text-sm font-bold" style={{ color: c.text }}>{formatCurrency(phaseTotal)}</td>
@@ -574,17 +562,13 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
             <SectionHeading number={sectionNums.equipment} title="Equipamentos" c={c} />
             <table className="w-full text-sm">
               <colgroup>
-                <col style={{ width: "45%" }} />
-                <col style={{ width: "10%" }} />
-                <col style={{ width: "22%" }} />
-                <col style={{ width: "23%" }} />
+                <col style={{ width: "70%" }} />
+                <col style={{ width: "30%" }} />
               </colgroup>
               <thead>
                 <tr className="border-b" style={{ borderColor: c.border }}>
                   <th className="text-left pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Equipamento</th>
                   <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Qtd</th>
-                  <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Valor Unit.</th>
-                  <th className="text-right pb-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: GREEN }}>Subtotal</th>
                 </tr>
               </thead>
               <tbody>
@@ -592,18 +576,8 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                   <tr key={i} className="border-b" style={{ borderColor: c.borderFaint }}>
                     <td className="py-2.5 align-middle" style={{ color: c.text }}>{item.name || "—"}</td>
                     <td className="py-2.5 text-right align-middle" style={{ color: c.text }}>{item.quantity}</td>
-                    <td className="py-2.5 text-right align-middle" style={{ color: c.textMuted }}>{formatCurrency(item.unitPrice)}</td>
-                    <td className="py-2.5 text-right font-medium align-middle" style={{ color: c.text }}>
-                      {formatCurrency((item.quantity || 0) * (item.unitPrice || 0))}
-                    </td>
                   </tr>
                 ))}
-                <tr>
-                  <td colSpan={3} className="pt-4 pb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: c.textMuted }}>
-                    Total Equipamentos
-                  </td>
-                  <td className="pt-4 pb-1 text-right font-bold" style={{ color: c.text }}>{formatCurrency(summary.equipment)}</td>
-                </tr>
               </tbody>
             </table>
           </SectionBlock>
@@ -737,7 +711,6 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
             <InvestmentLine label="Pré-produção" value={summary.preProduction} c={c} />
             <InvestmentLine label="Produção" value={summary.production} c={c} />
             <InvestmentLine label="Pós-produção" value={summary.postProduction} c={c} />
-            {summary.equipment > 0 && <InvestmentLine label="Equipamentos" value={summary.equipment} c={c} />}
             {summary.logistics > 0 && <InvestmentLine label="Logística" value={summary.logistics} c={c} />}
             <InvestmentLine label="Honorários" value={summary.fees} sub c={c} />
             <InvestmentLine label="Impostos" value={summary.taxes} sub c={c} />

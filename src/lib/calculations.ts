@@ -60,14 +60,15 @@ export function calcularInvestimento(
   taxRate: number = DEFAULT_TAX_RATE
 ): InvestmentSummary {
   const preProduction = calcularFase(team, "pre-production", customTeam);
-  const production = calcularFase(team, "production", customTeam) + (rawFootageValue || 0);
+  const equipmentTotal = calcularEquipamentos(equipment);
+  // equipamentos entram no valor de produção; `equipment` no retorno é só informativo
+  const production = calcularFase(team, "production", customTeam) + (rawFootageValue || 0) + equipmentTotal;
   const postProduction = calcularFase(team, "post-production", customTeam);
   const logisticsTotal = calcularLogistica(logistics);
-  const equipmentTotal = calcularEquipamentos(equipment);
 
-  const subtotal = preProduction + production + postProduction + logisticsTotal + equipmentTotal;
+  const subtotal = preProduction + production + postProduction + logisticsTotal;
   const fees = subtotal * (feesRate / 100);
-  const taxBase = preProduction + production + postProduction + logisticsTotal + equipmentTotal + fees;
+  const taxBase = subtotal + fees;
   const taxes = taxBase * (taxRate / 100);
   const total = subtotal + fees + taxes;
 

@@ -225,7 +225,7 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
     addDataRow(ws, `Material bruto (${rawFootageTypeLabel(deliverables?.rawFootageType)})`, 1, rawFootageValue, rawFootageValue);
   }
 
-  addTotalRow(ws, summary.production + summary.equipment);
+  addTotalRow(ws, summary.production);
   addEmpty(ws);
 
   // ── PÓS-PRODUÇÃO ──────────────────────────────────────────────────────

@@ -598,21 +598,6 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
     }),
   ];
 
-  if (summary.equipment > 0) {
-    investmentRows.push(
-      new TableRow({
-        children: [
-          new TableCell({
-            children: [new Paragraph({ text: "Equipamentos" })],
-          }),
-          new TableCell({
-            children: [new Paragraph({ text: formatCurrency(summary.equipment), alignment: AlignmentType.RIGHT })],
-          }),
-        ],
-      })
-    );
-  }
-
   if (summary.logistics > 0) {
     investmentRows.push(
       new TableRow({
