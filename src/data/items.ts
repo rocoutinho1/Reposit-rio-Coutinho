@@ -108,6 +108,8 @@ export const POST_PRODUCTION_PROCESSES = [
 export const INCLUDED_ITEMS = [
   { id: "inc_cap_video", label: "Captação de vídeo" },
   { id: "inc_edicao_video", label: "Edição de vídeo" },
+  { id: "inc_cap_audio", label: "Captação de áudio" },
+  { id: "inc_edicao_audio", label: "Edição de áudio" },
   { id: "inc_cap_foto", label: "Captação de foto" },
   { id: "inc_edicao_foto", label: "Edição de foto" },
   { id: "inc_roteiro", label: "Roteiro" },

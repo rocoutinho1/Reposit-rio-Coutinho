@@ -184,7 +184,15 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
   const todayFormatted = getTodayFormatted();
 
   const hasEquipment = (equipment || []).length > 0;
-  const hasIncluded = includedItems.included.length > 0 || includedItems.excluded.length > 0;
+  const includedLabels = [
+    ...labelFor(INCLUDED_ITEMS, includedItems.included),
+    ...(includedItems.customIncluded ?? []).map((s) => s.trim()).filter(Boolean),
+  ];
+  const excludedLabels = [
+    ...labelFor(INCLUDED_ITEMS, includedItems.excluded),
+    ...(includedItems.customExcluded ?? []).map((s) => s.trim()).filter(Boolean),
+  ];
+  const hasIncluded = includedLabels.length > 0 || excludedLabels.length > 0;
   const hasLogistics = logistics.displacement.enabled || logistics.meals.enabled || logistics.studio?.enabled || logistics.hosting?.enabled;
   const hasConditions = true;
 
@@ -588,11 +596,11 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
           <SectionBlock>
             <SectionHeading number={sectionNums.included} title="Itens Inclusos e Não Inclusos" c={c} />
             <div className="grid grid-cols-2 gap-8">
-              {includedItems.included.length > 0 && (
+              {includedLabels.length > 0 && (
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: c.textMuted }}>Inclusos</p>
                   <ul className="space-y-2.5">
-                    {labelFor(INCLUDED_ITEMS, includedItems.included).map((l) => (
+                    {includedLabels.map((l) => (
                       <li key={l} className="text-sm flex items-center gap-2" style={{ color: c.text }}>
                         <span className="font-bold" style={{ color: GREEN }}>✓</span> {l}
                       </li>
@@ -600,11 +608,11 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                   </ul>
                 </div>
               )}
-              {includedItems.excluded.length > 0 && (
+              {excludedLabels.length > 0 && (
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: c.textMuted }}>Não inclusos</p>
                   <ul className="space-y-2.5">
-                    {labelFor(INCLUDED_ITEMS, includedItems.excluded).map((l) => (
+                    {excludedLabels.map((l) => (
                       <li key={l} className="text-sm flex items-center gap-2" style={{ color: c.text }}>
                         <span className="font-bold" style={{ color: c.textFaint }}>✕</span> {l}
                       </li>

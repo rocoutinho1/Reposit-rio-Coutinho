@@ -134,7 +134,15 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
   const todayFormatted = getTodayFormatted();
 
   const hasEquipment = (equipment || []).length > 0;
-  const hasIncluded = includedItems.included.length > 0 || includedItems.excluded.length > 0;
+  const includedLabels = [
+    ...labelFor(INCLUDED_ITEMS, includedItems.included),
+    ...(includedItems.customIncluded ?? []).map((s) => s.trim()).filter(Boolean),
+  ];
+  const excludedLabels = [
+    ...labelFor(INCLUDED_ITEMS, includedItems.excluded),
+    ...(includedItems.customExcluded ?? []).map((s) => s.trim()).filter(Boolean),
+  ];
+  const hasIncluded = includedLabels.length > 0 || excludedLabels.length > 0;
   const hasLogistics = logistics.displacement.enabled || logistics.meals.enabled || logistics.studio?.enabled;
   const hasConditions = true;
 
@@ -479,25 +487,25 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
   // 6. Included/Excluded items
   if (hasIncluded) {
     sections.push(createSectionHeading(sectionNums.included, "Itens Inclusos e Não Inclusos"));
-    if (includedItems.included.length > 0) {
+    if (includedLabels.length > 0) {
       sections.push(
         new Paragraph({
           children: [new TextRun({ text: "Inclusos", bold: true, size: 20, color: GRAY_TEXT })],
           spacing: { after: 120 },
         })
       );
-      for (const item of labelFor(INCLUDED_ITEMS, includedItems.included)) {
+      for (const item of includedLabels) {
         sections.push(new Paragraph({ text: `✓ ${item}`, spacing: { after: 80 } }));
       }
     }
-    if (includedItems.excluded.length > 0) {
+    if (excludedLabels.length > 0) {
       sections.push(
         new Paragraph({
           children: [new TextRun({ text: "Não inclusos", bold: true, size: 20, color: GRAY_TEXT })],
           spacing: { before: 120, after: 120 },
         })
       );
-      for (const item of labelFor(INCLUDED_ITEMS, includedItems.excluded)) {
+      for (const item of excludedLabels) {
         sections.push(new Paragraph({ text: `✕ ${item}`, spacing: { after: 80 } }));
       }
     }

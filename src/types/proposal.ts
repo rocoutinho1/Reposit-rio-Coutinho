@@ -70,6 +70,8 @@ export interface EquipmentItem {
 export interface IncludedItems {
   included: string[];
   excluded: string[];
+  customIncluded?: string[];
+  customExcluded?: string[];
 }
 
 export interface Logistics {

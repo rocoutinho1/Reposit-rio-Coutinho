@@ -35,7 +35,7 @@ const DEFAULT_VALUES: ProposalFormData = {
   team: {},
   customTeam: [],
   equipment: [],
-  includedItems: { included: [], excluded: [] },
+  includedItems: { included: [], excluded: [], customIncluded: [], customExcluded: [] },
   schedule: "",
   clientResponsibilities: "",
   logistics: {

@@ -87,7 +87,7 @@ production: proc_cap_video, proc_cap_audio, proc_cap_foto
 postProduction: proc_decupagem, proc_montagem, proc_colorização, proc_sonorizacao, proc_tratamento_audio, proc_finalizacao
 
 IDs DISPONÍVEIS PARA ITENS INCLUSOS/EXCLUSOS:
-inc_cap_video, inc_edicao_video, inc_cap_foto, inc_edicao_foto, inc_roteiro, inc_animacao, inc_lettering, inc_material_bruto, inc_vfx, inc_animacoes_escopo, inc_ia
+inc_cap_video, inc_edicao_video, inc_cap_audio, inc_edicao_audio, inc_cap_foto, inc_edicao_foto, inc_roteiro, inc_animacao, inc_lettering, inc_material_bruto, inc_vfx, inc_animacoes_escopo, inc_ia
 
 IDs PARA VÍDEOS:
 name: aftermovie, video_case, reels, teaser, outro
