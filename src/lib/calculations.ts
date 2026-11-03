@@ -62,11 +62,12 @@ export function calcularInvestimento(
   const preProduction = calcularFase(team, "pre-production", customTeam);
   const equipmentTotal = calcularEquipamentos(equipment);
   // equipamentos entram no valor de produção; `equipment` no retorno é só informativo
-  const production = calcularFase(team, "production", customTeam) + (rawFootageValue || 0) + equipmentTotal;
+  const production = calcularFase(team, "production", customTeam) + equipmentTotal;
   const postProduction = calcularFase(team, "post-production", customTeam);
+  const rawFootage = rawFootageValue || 0;
   const logisticsTotal = calcularLogistica(logistics);
 
-  const subtotal = preProduction + production + postProduction + logisticsTotal;
+  const subtotal = preProduction + production + postProduction + rawFootage + logisticsTotal;
   const fees = subtotal * (feesRate / 100);
   const taxBase = subtotal + fees;
   const taxes = taxBase * (taxRate / 100);
@@ -76,6 +77,7 @@ export function calcularInvestimento(
     preProduction,
     production,
     postProduction,
+    rawFootage,
     equipment: equipmentTotal,
     logistics: logisticsTotal,
     subtotal,

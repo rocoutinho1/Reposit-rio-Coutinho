@@ -606,6 +606,21 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
     }),
   ];
 
+  if (summary.rawFootage > 0) {
+    investmentRows.push(
+      new TableRow({
+        children: [
+          new TableCell({
+            children: [new Paragraph({ text: `Material bruto (${rawFootageTypeLabel(deliverables.rawFootageType, deliverables.rawFootageCustomTypes)})` })],
+          }),
+          new TableCell({
+            children: [new Paragraph({ text: formatCurrency(summary.rawFootage), alignment: AlignmentType.RIGHT })],
+          }),
+        ],
+      })
+    );
+  }
+
   if (summary.logistics > 0) {
     investmentRows.push(
       new TableRow({

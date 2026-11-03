@@ -248,6 +248,7 @@ export function Investment({ control }: Props) {
             <Line label="Pré-produção" value={summary.preProduction} />
             <Line label="Produção" value={summary.production} />
             <Line label="Pós-produção" value={summary.postProduction} />
+            {summary.rawFootage > 0 && <Line label="Material bruto" value={summary.rawFootage} />}
             {summary.logistics > 0 && <Line label="Logística" value={summary.logistics} />}
           </div>
 

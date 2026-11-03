@@ -395,9 +395,8 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
             {phases.map((phase) => {
               const items = TEAM_ITEMS.filter((i) => i.phase === phase && team?.[i.id]?.selected);
               const customItems = customTeamList.filter((m) => m.phase === phase);
-              const showRawFootage = phase === "production" && rawFootageValue > 0;
-              if (!items.length && !customItems.length && !showRawFootage) return null;
-              const phaseTotal = calcularFase(team || {}, phase, customTeamList) + (showRawFootage ? rawFootageValue : 0);
+              if (!items.length && !customItems.length) return null;
+              const phaseTotal = calcularFase(team || {}, phase, customTeamList);
               return (
                 <div key={phase} style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: c.textMuted }}>{PHASE_LABELS[phase]}</p>
@@ -498,15 +497,6 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                             </tr>
                           );
                         })}
-                        {showRawFootage && (
-                          <tr className="border-b" style={{ borderColor: c.borderFaint }}>
-                            <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{rawFootageLabel}</td>
-                            <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.textFaint }}>—</td>
-                            <td className="py-2.5 text-right text-sm align-middle pr-4" style={{ color: c.textFaint }}>—</td>
-                            <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.textFaint }}>—</td>
-                            <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency(rawFootageValue)}</td>
-                          </tr>
-                        )}
                         <tr>
                           <td colSpan={4} className="pt-4 pb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: c.textMuted }}>
                             Total {PHASE_LABELS[phase]}
@@ -719,6 +709,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
             <InvestmentLine label="Pré-produção" value={summary.preProduction} c={c} />
             <InvestmentLine label="Produção" value={summary.production} c={c} />
             <InvestmentLine label="Pós-produção" value={summary.postProduction} c={c} />
+            {summary.rawFootage > 0 && <InvestmentLine label={rawFootageLabel} value={summary.rawFootage} c={c} />}
             {summary.logistics > 0 && <InvestmentLine label="Logística" value={summary.logistics} c={c} />}
             <InvestmentLine label="Honorários" value={summary.fees} sub c={c} />
             <InvestmentLine label="Impostos" value={summary.taxes} sub c={c} />

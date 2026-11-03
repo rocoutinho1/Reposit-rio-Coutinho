@@ -221,12 +221,17 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   const studioVal = logistics.studio?.value || 0;
   addDataRow(ws, "Locação", studioEnabled ? 1 : 0, studioVal, studioEnabled ? studioVal : 0);
 
-  if (rawFootageValue > 0) {
-    addDataRow(ws, `Material bruto (${rawFootageTypeLabel(deliverables?.rawFootageType, deliverables?.rawFootageCustomTypes)})`, 1, rawFootageValue, rawFootageValue);
-  }
-
   addTotalRow(ws, summary.production);
   addEmpty(ws);
+
+  // ── MATERIAL BRUTO ────────────────────────────────────────────────────
+  if (rawFootageValue > 0) {
+    addSectionHeader(ws, "Material bruto");
+    addColHeaders(ws, "Quantidade");
+    addDataRow(ws, `Material bruto (${rawFootageTypeLabel(deliverables?.rawFootageType, deliverables?.rawFootageCustomTypes)})`, 1, rawFootageValue, rawFootageValue);
+    addTotalRow(ws, summary.rawFootage);
+    addEmpty(ws);
+  }
 
   // ── PÓS-PRODUÇÃO ──────────────────────────────────────────────────────
   addSectionHeader(ws, "Pós produção");

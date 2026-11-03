@@ -236,6 +236,7 @@ function gerarPlanilha(data: ProposalFormData): string {
   csv += row("Pré-produção", summary.preProduction);
   csv += row("Produção", summary.production);
   csv += row("Pós-produção", summary.postProduction);
+  if (summary.rawFootage > 0) csv += row("Material bruto", summary.rawFootage);
   if (summary.logistics > 0) csv += row("Logística", summary.logistics);
   csv += row("Subtotal", summary.subtotal);
   csv += row(`Honorários (${feesPct}%)`, summary.fees);

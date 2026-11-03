@@ -145,6 +145,7 @@ export interface InvestmentSummary {
   preProduction: number;
   production: number;
   postProduction: number;
+  rawFootage: number;
   equipment: number;
   logistics: number;
   subtotal: number;
