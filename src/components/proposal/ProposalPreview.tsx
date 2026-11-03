@@ -169,7 +169,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
   const phases: Phase[] = ["pre-production", "production", "post-production"];
   const rawFootageValue = deliverables.rawFootageValue || 0;
   const rawFootageQuantity = deliverables.rawFootageQuantity || 0;
-  const rawFootageLabel = `Material bruto (${rawFootageTypeLabel(deliverables.rawFootageType)})`;
+  const rawFootageLabel = `Material bruto (${rawFootageTypeLabel(deliverables.rawFootageType, deliverables.rawFootageCustomTypes)})`;
 
   const labelFor = (arr: readonly { id: string; label: string }[], ids: string[]) =>
     arr.filter((i) => ids.includes(i.id)).map((i) => i.label);

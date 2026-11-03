@@ -15,6 +15,7 @@ export function Deliverables({ control }: Props) {
     control,
     name: "deliverables.video.groups",
   });
+  const rawFootageType = useWatch({ control, name: "deliverables.rawFootageType" });
 
   return (
     <section>
@@ -72,6 +73,47 @@ export function Deliverables({ control }: Props) {
                 </div>
               )}
             />
+            {rawFootageType === "custom" && (
+              <Controller
+                name="deliverables.rawFootageCustomTypes"
+                control={control}
+                defaultValue={[]}
+                render={({ field }) => {
+                  const types = field.value ?? [];
+                  return (
+                    <div className="flex w-full max-w-[220px] flex-col gap-1">
+                      <label className="text-xs font-medium text-black uppercase tracking-wider opacity-60">Tipos personalizados</label>
+                      {types.map((t, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            placeholder="Ex: Áudio"
+                            value={t}
+                            onChange={(e) => field.onChange(types.map((v, j) => (j === i ? e.target.value : v)))}
+                            className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-[#375e40]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => field.onChange(types.filter((_, j) => j !== i))}
+                            className="text-black/30 hover:text-red-500 transition-colors text-lg leading-none"
+                            title="Remover"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => field.onChange([...types, ""])}
+                        className="mt-1 self-start text-sm text-[#375e40] hover:underline underline-offset-2"
+                      >
+                        + Adicionar tipo
+                      </button>
+                    </div>
+                  );
+                }}
+              />
+            )}
             <Controller
               name="deliverables.rawFootageQuantity"
               control={control}

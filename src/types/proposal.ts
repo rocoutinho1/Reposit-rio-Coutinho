@@ -26,7 +26,8 @@ export interface Deliverables {
   photoQuantity: number;
   rawFootageQuantity: number;
   rawFootageValue: number;
-  rawFootageType?: "video" | "photo" | "both";
+  rawFootageType?: "video" | "photo" | "both" | "custom";
+  rawFootageCustomTypes?: string[];
 }
 
 export interface Processes {

@@ -61,16 +61,18 @@ export function GeneralConditions({ register, control }: Props) {
                       >
                         {field.value === opt.id && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                       </div>
+                      {/* Checkbox so clicking the selected option clears the field */}
                       <input
-                        type="radio"
+                        type="checkbox"
                         value={opt.id}
                         checked={field.value === opt.id}
-                        onChange={() => field.onChange(opt.id)}
+                        onChange={() => field.onChange(field.value === opt.id ? "" : opt.id)}
                         className="sr-only"
                       />
                       <span className="text-sm text-black">{opt.label}</span>
                     </label>
                   ))}
+                  <p className="text-xs text-black/40">Clique de novo na opção marcada para deixar em branco.</p>
                 </>
               )}
             />

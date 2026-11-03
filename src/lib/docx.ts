@@ -231,7 +231,7 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
     const quantityText = rawFootageQuantity > 0 ? ` — ${rawFootageQuantity} arquivo${rawFootageQuantity > 1 ? "s" : ""}` : "";
     sections.push(
       new Paragraph({
-        text: `Material bruto (${rawFootageTypeLabel(deliverables.rawFootageType)})${quantityText}`,
+        text: `Material bruto (${rawFootageTypeLabel(deliverables.rawFootageType, deliverables.rawFootageCustomTypes)})${quantityText}`,
         spacing: { after: 120 },
       })
     );

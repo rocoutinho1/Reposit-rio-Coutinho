@@ -74,9 +74,16 @@ export const RAW_FOOTAGE_TYPES = [
   { id: "video", label: "Vídeo" },
   { id: "photo", label: "Foto" },
   { id: "both", label: "Vídeo e foto" },
+  { id: "custom", label: "Personalizado" },
 ] as const;
 
-export function rawFootageTypeLabel(type?: string): string {
+export function rawFootageTypeLabel(type?: string, customTypes?: string[]): string {
+  if (type === "custom") {
+    const names = (customTypes || []).map((t) => t.trim()).filter(Boolean);
+    if (names.length === 0) return "Personalizado";
+    if (names.length === 1) return names[0];
+    return `${names.slice(0, -1).join(", ")} e ${names[names.length - 1]}`;
+  }
   return RAW_FOOTAGE_TYPES.find((t) => t.id === type)?.label || "Vídeo";
 }
 
