@@ -1,6 +1,6 @@
 import { ProposalFormData } from "@/types/proposal";
 import { TEAM_ITEMS, PHASE_LABELS, Phase, VIDEO_NAMES, VIDEO_FORMATS, VIDEO_DURATIONS, INCLUDED_ITEMS, REVISION_OPTIONS, PRE_PRODUCTION_PROCESSES, PRODUCTION_PROCESSES, POST_PRODUCTION_PROCESSES, TAX_DISCLOSURE_TEXT, rawFootageTypeLabel } from "@/data/items";
-import { calcularInvestimentoFromData, calcularFase, formatCurrency } from "@/lib/calculations";
+import { calcularInvestimentoFromData, calcularFase, formatCurrency, formatHorasDiarias } from "@/lib/calculations";
 import { Document, Packer, Paragraph, HeadingLevel, Table, TableRow, TableCell, BorderStyle, AlignmentType, TextRun, WidthType } from "docx";
 import { saveAs } from "file-saver";
 
@@ -333,7 +333,7 @@ export async function gerarDocx(data: ProposalFormData): Promise<void> {
               borders: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "DDDDDD" } },
             }),
             new TableCell({
-              children: [new Paragraph({ text: `${member?.hoursPerDiaria || 0}h`, alignment: AlignmentType.RIGHT })],
+              children: [new Paragraph({ text: formatHorasDiarias(member), alignment: AlignmentType.RIGHT })],
               borders: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "DDDDDD" } },
             }),
           ],

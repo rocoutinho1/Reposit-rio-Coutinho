@@ -16,7 +16,7 @@ import {
   TAX_DISCLOSURE_TEXT,
   rawFootageTypeLabel,
 } from "@/data/items";
-import { calcularInvestimentoFromData, calcularFase, formatCurrency } from "@/lib/calculations";
+import { calcularInvestimentoFromData, calcularFase, formatCurrency, totalHorasMembro, formatHorasDiarias } from "@/lib/calculations";
 
 interface Props {
   data: ProposalFormData;
@@ -416,7 +416,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                         {items.map((item) => {
                           const member = team?.[item.id];
                           const rate = (member?.customRate !== undefined && member.customRate > 0) ? member.customRate : item.ratePerHour;
-                          const totalHours = (member?.diarias || 0) * (member?.hoursPerDiaria || 0);
+                          const totalHours = totalHorasMembro(member);
                           const totalValue = rate * totalHours;
                           return (
                             <tr key={item.id} className="border-b" style={{ borderColor: c.borderFaint }}>
@@ -426,7 +426,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           );
                         })}
                         {customItems.map((m, i) => {
-                          const totalHours = (m.diarias || 0) * (m.hoursPerDiaria || 0);
+                          const totalHours = totalHorasMembro(m);
                           return (
                             <tr key={`custom-${i}`} className="border-b" style={{ borderColor: c.borderFaint }}>
                               <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{m.label || "—"}</td>
@@ -465,7 +465,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           const member = team?.[item.id];
                           const rate = (member?.customRate !== undefined && member.customRate > 0) ? member.customRate : item.ratePerHour;
                           const diarias = member?.diarias || 0;
-                          const totalHours = diarias * (member?.hoursPerDiaria || 0);
+                          const totalHours = totalHorasMembro(member);
                           const totalValue = rate * totalHours;
                           const dates = (member?.dates || []).slice(0, diarias).filter(Boolean);
                           const hasDates = dates.length > 0;
@@ -476,14 +476,14 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                                 {hasDates ? dates.map((d, i) => <div key={i}>{formatDate(d)}</div>) : "—"}
                               </td>
                               <td className="py-2.5 text-right text-sm align-middle pr-4" style={{ color: c.text }}>{diarias}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{member?.hoursPerDiaria || 0}h</td>
+                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatHorasDiarias(member)}</td>
                               <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency(totalValue)}</td>
                             </tr>
                           );
                         })}
                         {customItems.map((m, i) => {
                           const diarias = m.diarias || 0;
-                          const totalHours = diarias * (m.hoursPerDiaria || 0);
+                          const totalHours = totalHorasMembro(m);
                           const dates = (m.dates || []).slice(0, diarias).filter(Boolean);
                           return (
                             <tr key={`custom-${i}`} className="border-b" style={{ borderColor: c.borderFaint }}>
@@ -492,7 +492,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                                 {dates.length > 0 ? dates.map((d, j) => <div key={j}>{formatDate(d)}</div>) : "—"}
                               </td>
                               <td className="py-2.5 text-right text-sm align-middle pr-4" style={{ color: c.text }}>{diarias}</td>
-                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{m.hoursPerDiaria || 0}h</td>
+                              <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatHorasDiarias(m)}</td>
                               <td className="py-2.5 text-right text-sm align-middle" style={{ color: c.text }}>{formatCurrency((m.ratePerHour || 0) * totalHours)}</td>
                             </tr>
                           );
@@ -521,7 +521,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                         {items.map((item) => {
                           const member = team?.[item.id];
                           const rate = (member?.customRate !== undefined && member.customRate > 0) ? member.customRate : item.ratePerHour;
-                          const totalHours = (member?.diarias || 0) * (member?.hoursPerDiaria || 0);
+                          const totalHours = totalHorasMembro(member);
                           const totalValue = rate * totalHours;
                           return (
                             <tr key={item.id} className="border-b" style={{ borderColor: c.borderFaint }}>
@@ -531,7 +531,7 @@ export function ProposalPreview({ data, darkMode = false }: Props) {
                           );
                         })}
                         {customItems.map((m, i) => {
-                          const totalHours = (m.diarias || 0) * (m.hoursPerDiaria || 0);
+                          const totalHours = totalHorasMembro(m);
                           return (
                             <tr key={`custom-${i}`} className="border-b" style={{ borderColor: c.borderFaint }}>
                               <td className="py-2.5 text-sm align-middle" style={{ color: c.text }}>{m.label || "—"}</td>

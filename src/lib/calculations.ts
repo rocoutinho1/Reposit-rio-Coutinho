@@ -1,7 +1,28 @@
 import { TEAM_ITEMS } from "@/data/items";
-import type { TeamSelection, Logistics, InvestmentSummary, EquipmentItem, CustomTeamMember, ProposalFormData } from "@/types/proposal";
+import type { TeamMember, TeamSelection, Logistics, InvestmentSummary, EquipmentItem, CustomTeamMember, ProposalFormData } from "@/types/proposal";
 
 export const DEFAULT_TAX_RATE = 8;
+
+type DiariaHours = Pick<TeamMember, "diarias" | "hoursPerDiaria" | "hoursByDiaria">;
+
+// cada diária pode ter duração própria; diária sem valor usa o padrão de horas/diária
+export function horasDaDiaria(m: DiariaHours, idx: number): number {
+  const own = m.hoursByDiaria?.[idx];
+  return own && own > 0 ? own : m.hoursPerDiaria || 0;
+}
+
+export function totalHorasMembro(m: DiariaHours | undefined): number {
+  if (!m) return 0;
+  let total = 0;
+  for (let i = 0; i < (m.diarias || 0); i++) total += horasDaDiaria(m, i);
+  return total;
+}
+
+export function formatHorasDiarias(m: DiariaHours | undefined): string {
+  if (!m || !m.diarias) return `${m?.hoursPerDiaria || 0}h`;
+  const hours = Array.from({ length: m.diarias }, (_, i) => horasDaDiaria(m, i));
+  return hours.every((h) => h === hours[0]) ? `${hours[0]}h` : hours.map((h) => `${h}h`).join(" + ");
+}
 
 export function calcularFase(
   team: TeamSelection,
@@ -11,7 +32,7 @@ export function calcularFase(
   const regular = TEAM_ITEMS.filter((item) => item.phase === phase).reduce((sum, item) => {
     const member = team[item.id];
     if (!member?.selected) return sum;
-    const totalHours = (member.diarias || 0) * (member.hoursPerDiaria || 0);
+    const totalHours = totalHorasMembro(member);
     const rate = (member.customRate !== undefined && member.customRate > 0)
       ? member.customRate
       : item.ratePerHour;
@@ -21,7 +42,7 @@ export function calcularFase(
   const custom = customTeam
     .filter((m) => m.phase === phase)
     .reduce((sum, m) => {
-      const totalHours = (m.diarias || 0) * (m.hoursPerDiaria || 0);
+      const totalHours = totalHorasMembro(m);
       return sum + (m.ratePerHour || 0) * totalHours;
     }, 0);
 

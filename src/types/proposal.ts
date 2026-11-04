@@ -45,6 +45,7 @@ export interface TeamMember {
   selected: boolean;
   diarias: number;
   hoursPerDiaria: number;
+  hoursByDiaria?: number[];
   date?: string;
   dates?: string[];
   customRate?: number;
@@ -56,6 +57,7 @@ export interface CustomTeamMember {
   ratePerHour: number;
   diarias: number;
   hoursPerDiaria: number;
+  hoursByDiaria?: number[];
   dates?: string[];
 }
 

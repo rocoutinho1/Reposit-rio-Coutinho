@@ -5,10 +5,63 @@ import { ProposalFormData, CustomTeamMember } from "@/types/proposal";
 import { TEAM_ITEMS, PHASE_LABELS, Phase } from "@/data/items";
 import { CheckboxItem } from "@/components/ui/CheckboxItem";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { formatCurrency } from "@/lib/calculations";
+import { formatCurrency, totalHorasMembro } from "@/lib/calculations";
 
 interface Props {
   control: Control<ProposalFormData>;
+}
+
+// ── Diárias de produção: data e duração de cada uma ──────────────────────────
+
+interface DiariaRowsProps {
+  basePath: string;
+  diarias: number;
+  defaultHours: number;
+  control: Control<ProposalFormData>;
+}
+
+function DiariaRows({ basePath, diarias, defaultHours, control }: DiariaRowsProps) {
+  return (
+    <div className="flex flex-col gap-1.5 w-full">
+      {Array.from({ length: diarias }).map((_, idx) => (
+        <div key={idx} className="flex items-center gap-3">
+          <span className="text-xs text-black/35 w-10 shrink-0">dia {idx + 1}</span>
+          <Controller
+            name={`${basePath}.dates.${idx}` as never}
+            control={control}
+            defaultValue={"" as never}
+            render={({ field: f }) => (
+              <input
+                type="date"
+                value={(f.value as string) || ""}
+                onChange={(e) => f.onChange(e.target.value)}
+                className="border-b border-black/20 bg-transparent py-1 text-sm outline-none focus:border-[#375e40] text-black/70"
+              />
+            )}
+          />
+          <Controller
+            name={`${basePath}.hoursByDiaria.${idx}` as never}
+            control={control}
+            defaultValue={0 as never}
+            render={({ field: f }) => (
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  min={0}
+                  step={0.5}
+                  placeholder={String(defaultHours || 0)}
+                  value={(f.value as number) || ""}
+                  onChange={(e) => f.onChange(Number(e.target.value))}
+                  className="w-12 border-b border-black/20 bg-transparent py-1 text-sm outline-none focus:border-[#375e40] text-center"
+                />
+                <span className="text-xs text-black/40">h</span>
+              </div>
+            )}
+          />
+        </div>
+      ))}
+    </div>
+  );
 }
 
 // ── Linha de profissional padrão (da lista fixa) ─────────────────────────────
@@ -27,7 +80,8 @@ function TeamMemberRow({ itemId, label, defaultRate, phase, control }: TeamMembe
   const hoursPerDiaria = (useWatch({ control, name: `team.${itemId}.hoursPerDiaria` as never }) as unknown as number) || 0;
   const customRate = useWatch({ control, name: `team.${itemId}.customRate` as never }) as unknown as number | undefined;
   const effectiveRate = customRate !== undefined && customRate > 0 ? customRate : defaultRate;
-  const subtotal = selected ? effectiveRate * diarias * hoursPerDiaria : 0;
+  const hoursByDiaria = useWatch({ control, name: `team.${itemId}.hoursByDiaria` as never }) as unknown as number[] | undefined;
+  const subtotal = selected ? effectiveRate * totalHorasMembro({ diarias, hoursPerDiaria, hoursByDiaria }) : 0;
 
   return (
     <div className="py-2 border-b border-black/5 last:border-0">
@@ -85,26 +139,7 @@ function TeamMemberRow({ itemId, label, defaultRate, phase, control }: TeamMembe
                       )}
                     />
                     {phase === "production" && diarias > 0 && (
-                      <div className="flex flex-col gap-1.5 w-full">
-                        {Array.from({ length: diarias }).map((_, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <span className="text-xs text-black/35 w-10 shrink-0">dia {idx + 1}</span>
-                            <Controller
-                              name={`team.${itemId}.dates.${idx}` as never}
-                              control={control}
-                              defaultValue={"" as never}
-                              render={({ field: f }) => (
-                                <input
-                                  type="date"
-                                  value={(f.value as string) || ""}
-                                  onChange={(e) => f.onChange(e.target.value)}
-                                  className="border-b border-black/20 bg-transparent py-1 text-sm outline-none focus:border-[#375e40] text-black/70"
-                                />
-                              )}
-                            />
-                          </div>
-                        ))}
-                      </div>
+                      <DiariaRows basePath={`team.${itemId}`} diarias={diarias} defaultHours={hoursPerDiaria} control={control} />
                     )}
                   </div>
                 )}
@@ -165,7 +200,8 @@ function CustomMemberRow({
   const diarias = (useWatch({ control, name: `customTeam.${index}.diarias` as never }) as unknown as number) || 0;
   const hoursPerDiaria = (useWatch({ control, name: `customTeam.${index}.hoursPerDiaria` as never }) as unknown as number) || 0;
   const rate = (useWatch({ control, name: `customTeam.${index}.ratePerHour` as never }) as unknown as number) || 0;
-  const subtotal = rate * diarias * hoursPerDiaria;
+  const hoursByDiaria = useWatch({ control, name: `customTeam.${index}.hoursByDiaria` as never }) as unknown as number[] | undefined;
+  const subtotal = rate * totalHorasMembro({ diarias, hoursPerDiaria, hoursByDiaria });
 
   return (
     <div className="py-2 border-b border-black/5 last:border-0">
@@ -222,26 +258,7 @@ function CustomMemberRow({
               )}
             />
             {phase === "production" && diarias > 0 && (
-              <div className="flex flex-col gap-1.5 w-full">
-                {Array.from({ length: diarias }).map((_, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="text-xs text-black/35 w-10 shrink-0">dia {idx + 1}</span>
-                    <Controller
-                      name={`customTeam.${index}.dates.${idx}` as never}
-                      control={control}
-                      defaultValue={"" as never}
-                      render={({ field: f }) => (
-                        <input
-                          type="date"
-                          value={(f.value as string) || ""}
-                          onChange={(e) => f.onChange(e.target.value)}
-                          className="border-b border-black/20 bg-transparent py-1 text-sm outline-none focus:border-[#375e40] text-black/70"
-                        />
-                      )}
-                    />
-                  </div>
-                ))}
-              </div>
+              <DiariaRows basePath={`customTeam.${index}`} diarias={diarias} defaultHours={hoursPerDiaria} control={control} />
             )}
           </div>
         </div>

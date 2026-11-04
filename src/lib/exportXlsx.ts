@@ -2,7 +2,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { ProposalFormData } from "@/types/proposal";
 import { TEAM_ITEMS, rawFootageTypeLabel } from "@/data/items";
-import { calcularInvestimentoFromData } from "./calculations";
+import { calcularInvestimentoFromData, totalHorasMembro } from "./calculations";
 
 const TAX_RATE = 0.08;
 
@@ -181,7 +181,7 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   const preItems = TEAM_ITEMS.filter((i) => i.phase === "pre-production");
   for (const item of preItems) {
     const m = team[item.id];
-    const hrs = m?.selected ? (m.diarias || 0) * (m.hoursPerDiaria || 0) : 0;
+    const hrs = m?.selected ? totalHorasMembro(m) : 0;
     const rate = (m?.customRate !== undefined && m.customRate > 0) ? m.customRate : item.ratePerHour;
     addDataRow(ws, item.label, hrs, rate, rate * hrs);
   }
@@ -197,7 +197,7 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   const prodItems = TEAM_ITEMS.filter((i) => i.phase === "production");
   for (const item of prodItems) {
     const m = team[item.id];
-    const hrs = m?.selected ? (m.diarias || 0) * (m.hoursPerDiaria || 0) : 0;
+    const hrs = m?.selected ? totalHorasMembro(m) : 0;
     const rate = (m?.customRate !== undefined && m.customRate > 0) ? m.customRate : item.ratePerHour;
     addDataRow(ws, item.label, hrs, rate, rate * hrs);
   }
@@ -240,7 +240,7 @@ export async function exportarPlanilha(data: ProposalFormData): Promise<void> {
   const posItems = TEAM_ITEMS.filter((i) => i.phase === "post-production");
   for (const item of posItems) {
     const m = team[item.id];
-    const hrs = m?.selected ? (m.diarias || 0) * (m.hoursPerDiaria || 0) : 0;
+    const hrs = m?.selected ? totalHorasMembro(m) : 0;
     const rate = (m?.customRate !== undefined && m.customRate > 0) ? m.customRate : item.ratePerHour;
     addDataRow(ws, item.label, hrs, rate, rate * hrs);
   }

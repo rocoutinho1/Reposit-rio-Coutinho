@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ProposalFormData } from "@/types/proposal";
 import { ProposalPreview } from "@/components/proposal/ProposalPreview";
 import { TEAM_ITEMS, PHASE_LABELS, Phase } from "@/data/items";
-import { calcularInvestimentoFromData, calcularFase, DEFAULT_TAX_RATE } from "@/lib/calculations";
+import { calcularInvestimentoFromData, calcularFase, DEFAULT_TAX_RATE, totalHorasMembro, formatHorasDiarias } from "@/lib/calculations";
 import { exportarPlanilha } from "@/lib/exportXlsx";
 
 export default function PreviewPage() {
@@ -188,8 +188,8 @@ function gerarPlanilha(data: ProposalFormData): string {
     for (const item of items) {
       const member = team[item.id];
       const diarias = member?.diarias || 0;
-      const hoursPerDiaria = member?.hoursPerDiaria || 0;
-      const totalHours = diarias * hoursPerDiaria;
+      const hoursPerDiaria = formatHorasDiarias(member);
+      const totalHours = totalHorasMembro(member);
       const subtotal = item.ratePerHour * totalHours;
       csv += row(PHASE_LABELS[phase], item.label, diarias, hoursPerDiaria, totalHours, item.ratePerHour, subtotal);
     }
